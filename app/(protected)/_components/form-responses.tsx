@@ -1,6 +1,6 @@
 "use client"
 
-import { Form, FormQuestion, User } from "@prisma/client";
+import { Form, FormQuestion } from "@prisma/client";
 import type { FormResponse } from "@/types/index";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChevronDownIcon, ChevronsUpDown } from "lucide-react";
@@ -37,8 +37,8 @@ import {
 } from "@/components/ui/table"
 import { useEffect, useState } from "react";
 
-const FormResponses: React.FC<{ form: Form, formQuestions: FormQuestion[], formResponses: FormResponse[] }> = ({ form, formQuestions, formResponses }) => {
-    const [responses, setResponses] = useState<FormResponse[]>(formResponses);
+const FormResponses: React.FC<{ form: Form, formQuestions: FormQuestion[], formResponses: FormResponse[][] }> = ({ form, formQuestions, formResponses }) => {
+    const [responses, setResponses] = useState<FormResponse[][]>(formResponses);
     const [search, setSearch] = useState<string>("");
 
     useEffect(() => {
@@ -46,10 +46,23 @@ const FormResponses: React.FC<{ form: Form, formQuestions: FormQuestion[], formR
     }, [formResponses]);
 
     useEffect(() => {
-        setResponses(formResponses.filter(response => response.createdBy.email?.includes(search)))
+        const filteredIndices: number[] = [];
+        const filteredResponses: FormResponse[][] = [];
+
+        formResponses.forEach((responses, index) => {
+            const filtered = responses.filter(response =>
+                response.createdBy.email?.toLowerCase().includes(search.toLowerCase())
+            );
+            if (filtered.length > 0) {
+                filteredIndices.push(index);
+                filteredResponses.push(filtered);
+            }
+        });
+
+        setResponses(filteredResponses);
     }, [search, formResponses]);
 
-    const columns: ColumnDef<FormResponse>[] = [
+    const columns: ColumnDef<FormResponse[]>[] = [
         {
             id: "select",
             header: ({ table }) => (
@@ -85,7 +98,7 @@ const FormResponses: React.FC<{ form: Form, formQuestions: FormQuestion[], formR
                     </Button>
                 )
             },
-            cell: ({ row }) => <div>{row.original.createdBy.name}</div>,
+            cell: ({ row }) => <div>{row.original[row.index]?.createdBy.name}</div>,
         },
         {
             accessorKey: "email",
@@ -100,15 +113,13 @@ const FormResponses: React.FC<{ form: Form, formQuestions: FormQuestion[], formR
                     </Button>
                 )
             },
-            cell: ({ row }) => <div className="lowercase">{row.original.createdBy.email}</div>,
+            cell: ({ row }) => <div>{row.original[row.index]?.createdBy.email}</div>,
         },
-
     ];
 
     formQuestions.forEach(question => {
         columns.push({
             accessorKey: question.label,
-            // header: question.label,
             header: ({ column }) => {
                 return (
                     <Button
@@ -121,8 +132,8 @@ const FormResponses: React.FC<{ form: Form, formQuestions: FormQuestion[], formR
                 )
             },
             cell: ({ row }) => {
-                const response = row.original.answer;
-                return <div>{response ? response.join(', ') : ""}</div>;
+                const response = row.original.find(resp => resp.questionId === question.id);
+                return <div>{response ? response.answer.join(', ') : ""}</div>;
             }
         });
     });

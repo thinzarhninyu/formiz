@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
 import { QuestionType } from '@prisma/client';
 import { PlusCircle, Trash } from 'lucide-react';
 import React from 'react';
@@ -47,6 +48,12 @@ const FormCreator: React.FC<{ questions: Question[], setQuestions: React.Dispatc
     const handleQuestionTypeChange = (type: QuestionType, index: number) => {
         const newQuestions = [...questions];
         newQuestions[index].type = type;
+        setQuestions(newQuestions);
+    };
+
+    const handleQuestionRequiredChange = (required: boolean, index: number) => {
+        const newQuestions = [...questions];
+        newQuestions[index].required = required;
         setQuestions(newQuestions);
     };
 
@@ -108,6 +115,7 @@ const FormCreator: React.FC<{ questions: Question[], setQuestions: React.Dispatc
                                 <SelectItem value={QuestionType.FILE}>File</SelectItem>
                             </SelectContent>
                         </Select>
+                        <Switch checked={question.required} onCheckedChange={(e: boolean) => handleQuestionRequiredChange(e, questionIndex)} />
                         <Button onClick={(e) => removeQuestion(e, questionIndex)}><Trash className='w-5 h-5' /></Button>
                     </div>
                     {["MULTIPLE_CHOICE", "DROPDOWN"].includes(question.type) && (

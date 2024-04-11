@@ -1,4 +1,9 @@
 import { db } from "@/lib/db";
+import { FormResponse } from "@/types";
+
+interface GroupedResponses {
+    [userId: string]: FormResponse[];
+}
 
 export const getForms = async (id: string) => {
     try {
@@ -34,7 +39,18 @@ export const getFormResponses = async (formId: string) => {
     try {
         const responses = await db.formResponse.findMany({ where: { formId }, include: { createdBy: true } });
 
-        return responses;
+        const groupedResponses: GroupedResponses = responses.reduce((groups: GroupedResponses, response) => {
+            const userId = response.createdBy.id;
+            if (!groups[userId]) {
+                groups[userId] = [];
+            }
+            groups[userId].push(response);
+            return groups;
+        }, {});
+
+        const groupedResponsesArray: FormResponse[][] = Object.values(groupedResponses);
+
+        return groupedResponsesArray;
     } catch {
         return null;
     }

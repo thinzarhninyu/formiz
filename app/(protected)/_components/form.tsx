@@ -14,6 +14,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { CreateResponse } from "@/actions/create-response";
+import { CircleAlert } from "lucide-react";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 export const ViewForm: React.FC<{ form: Form, formQuestions: FormQuestion[], formResponses?: FormResponse[] | null, type: "view" | "manage" }> = ({ form, formQuestions, formResponses, type }) => {
 
@@ -33,7 +40,6 @@ export const ViewForm: React.FC<{ form: Form, formQuestions: FormQuestion[], for
     };
 
     const getPreviousResponse = (questionId: string) => {
-        // return formResponses?.find(response => response.hackathonFormResponse.find(subResponse => subResponse.questionId === questionId))?.hackathonFormResponse.find(subResponse => subResponse.questionId === questionId)?.answer;
         return formResponses?.find(response => response.questionId === questionId)?.answer;
     };
 
@@ -42,21 +48,32 @@ export const ViewForm: React.FC<{ form: Form, formQuestions: FormQuestion[], for
         setSuccess("");
 
         startTransition(() => {
-            CreateResponse({
-                responses: Object.entries(responses).map(([questionId, response]) => ({
-                    questionId,
-                    response: Array.isArray(response) ? response as string[] : [response as string],
-                })),
-                formId: form.id,
-            })
-                .then((responseData) => {
-                    setError(responseData.error);
-                    setSuccess(responseData.success);
-                    router.push(`/form/${form.id}/success`);
+            const allRequiredFilled = formQuestions.every((question) => {
+                if (question.required) {
+                    return responses[question.id] !== undefined && responses[question.id] !== '';
+                }
+                return true;
+            });
+
+            if (allRequiredFilled) {
+                CreateResponse({
+                    responses: Object.entries(responses).map(([questionId, response]) => ({
+                        questionId,
+                        response: Array.isArray(response) ? response as string[] : [response as string],
+                    })),
+                    formId: form.id,
                 })
-                .catch((error) => {
-                    setError(error.message);
-                });
+                    .then((responseData) => {
+                        setError(responseData.error);
+                        setSuccess(responseData.success);
+                        router.push(`/form/${form.id}/success`);
+                    })
+                    .catch((error) => {
+                        setError(error.message);
+                    });
+            } else {
+                setError("Please fill in all required questions.");
+            }
         });
     }
 
@@ -76,22 +93,34 @@ export const ViewForm: React.FC<{ form: Form, formQuestions: FormQuestion[], for
                     <div className="space-y-4">
                         {formQuestions.map((question) => (
                             <div key={question.id}>
-                                <Label htmlFor={question.id}>{question.label}</Label>
+                                <Label htmlFor={question.id} className="flex flex-row gap-x-1 items-center mb-3">
+                                    {question.label}
+                                    {question.required &&
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <span className="text-red-500"><CircleAlert size={12} /></span>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>This question is required to respond.</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>}
+                                </Label>
                                 {question.type === QuestionType.TEXT && (
                                     <Input
                                         type={question.type}
                                         name={question.id}
-                                        // disabled={hackathonFormResponses && hackathonFormResponses.length > 0}
+                                        disabled={type === "manage" ?? (formResponses && formResponses.length > 0)}
                                         defaultValue={(getPreviousResponse(question.id)?.[0] ?? '')}
                                         value={responses[question.id] as string}
                                         onChange={(e) => handleChange(question.id, e.target.value, QuestionType.TEXT)}
                                     />
                                 )}
-
                                 {question.type === QuestionType.TEXTAREA && (
                                     <Textarea
                                         name={question.id}
-                                        // disabled={hackathonFormResponses && hackathonFormResponses.length > 0}
+                                        disabled={type === "manage" ?? (formResponses && formResponses.length > 0)}
                                         defaultValue={(getPreviousResponse(question.id)?.[0] ?? '')}
                                         value={responses[question.id] as string}
                                         onChange={(e) => handleChange(question.id, e.target.value, QuestionType.TEXTAREA)}
@@ -99,7 +128,7 @@ export const ViewForm: React.FC<{ form: Form, formQuestions: FormQuestion[], for
                                 )}
                                 {question.type === QuestionType.DROPDOWN && (
                                     <Select name={question.id}
-                                        // disabled={hackathonFormResponses && hackathonFormResponses.length > 0} 
+                                        disabled={type === "manage" ?? (formResponses && formResponses.length > 0)}
                                         defaultValue={getPreviousResponse(question.id)?.[0]}
                                         value={responses[question.id] as string}
                                         onValueChange={(e) => handleChange(question.id, e, QuestionType.DROPDOWN)}
@@ -120,7 +149,7 @@ export const ViewForm: React.FC<{ form: Form, formQuestions: FormQuestion[], for
                                             <div key={option} className="flex flex-row gap-x-3">
                                                 <Checkbox
                                                     name={option}
-                                                    // disabled={hackathonFormResponses && hackathonFormResponses.length > 0}
+                                                    disabled={type === "manage" ?? (formResponses && formResponses.length > 0)}
                                                     checked={formResponses && formResponses.length > 0 ? getPreviousResponse(question.id)?.includes(option) : Array.isArray(responses[question.id]) && (responses[question.id] as string[]).includes(option)}
                                                     onCheckedChange={(isChecked) => {
                                                         const currentOptions = Array.isArray(responses[question.id]) ? (responses[question.id] as string[]) : [];
@@ -138,7 +167,7 @@ export const ViewForm: React.FC<{ form: Form, formQuestions: FormQuestion[], for
                                 {question.type === QuestionType.CHECKBOX && (
                                     <Checkbox
                                         name={question.id}
-                                        // disabled={hackathonFormResponses && hackathonFormResponses.length > 0}
+                                        disabled={type === "manage" ?? (formResponses && formResponses.length > 0)}
                                         checked={formResponses && formResponses.length > 0 ? (getPreviousResponse(question.id)?.[0] === "true" ? true : false) : (responses[question.id] === "true" ? true : false)}
                                         onCheckedChange={(e) => {
                                             handleChange(question.id, e === true ? "true" : "false", QuestionType.CHECKBOX)
@@ -155,7 +184,7 @@ export const ViewForm: React.FC<{ form: Form, formQuestions: FormQuestion[], for
             </CardContent>
             <CardFooter className="flex justify-between">
                 <Button
-                    disabled={type === "manage" || isPending}
+                    disabled={type === "manage" || (formResponses && formResponses.length > 0) || isPending}
                     type="submit"
                     onClick={handleSubmit}
                     className="w-full"

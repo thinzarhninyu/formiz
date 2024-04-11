@@ -12,6 +12,7 @@ import { FormSuccess } from "@/components/form-success";
 import { CreateForm } from "@/actions/create-form";
 import { FileUpload } from "./file-upload";
 import { UpdateForm } from "@/actions/update-form";
+import { useRouter } from "next/navigation";
 
 interface Question {
     id?: string;
@@ -23,6 +24,7 @@ interface Question {
 
 export const FormQuestions: React.FC<{ form?: Form, formQuestions?: FormQuestion[] }> = ({ form, formQuestions }) => {
 
+    const router = useRouter();
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("");
     const [isPending, startTransition] = useTransition();
@@ -54,6 +56,9 @@ export const FormQuestions: React.FC<{ form?: Form, formQuestions?: FormQuestion
                     .then((questionData) => {
                         setError(questionData.error);
                         setSuccess(questionData.success);
+                        if (questionData.success) {
+                            router.push(`/form/${questionData.id}/manage`);
+                        }
                     })
                     .catch((error) => {
                         setError(error.message);
@@ -73,6 +78,9 @@ export const FormQuestions: React.FC<{ form?: Form, formQuestions?: FormQuestion
                     .then((questionData) => {
                         setError(questionData.error);
                         setSuccess(questionData.success);
+                        if (questionData.success) {
+                            router.push(`/form/${questionData.id}/manage`);
+                        }
                     })
                     .catch((error) => {
                         setError(error.message);
