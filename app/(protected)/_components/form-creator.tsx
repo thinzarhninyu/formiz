@@ -7,25 +7,54 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { QuestionType } from '@prisma/client';
-import { PlusCircle, Trash } from 'lucide-react';
-import React from 'react';
+import { PlusCircle, Trash, Hand } from 'lucide-react';
+// import React, { ChangeEvent, useState } from 'react';
+// import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragOverlay } from '@dnd-kit/core';
+// import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, SortableData } from '@dnd-kit/sortable';
+// import { SortableItem } from './sortable-item';
 
 interface Question {
     id?: string;
     label: string;
     type: QuestionType;
     required: boolean;
+    order: number;
     options: string[];
 }
 
 const FormCreator: React.FC<{ questions: Question[], setQuestions: React.Dispatch<React.SetStateAction<Question[]>> }> = ({ questions, setQuestions }) => {
+
+    // const [activeId, setActiveId] = useState(null);
+    // const sensors = useSensors(
+    //     useSensor(PointerSensor),
+    //     useSensor(KeyboardSensor)
+    // );
+
+    // const handleDragStart = (event: any) => {
+    //     setActiveId(event.active.id);
+    // };
+
+    // const handleDragEnd = (event: any) => {
+    //     const { active, over } = event;
+
+    //     if (!over) {
+    //         return;
+    //     }
+
+    //     const oldIndex = questions.findIndex((item) => item.id === active.id);
+    //     const newIndex = questions.findIndex((item) => item.id === over.id);
+
+    //     const reorderedQuestions = arrayMove(questions, oldIndex, newIndex);
+
+    //     setQuestions(reorderedQuestions.map((question, index) => ({ ...question, order: index })));
+    // };
 
     const addQuestion = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         setQuestions(prevQuestions => [
             ...prevQuestions,
-            { label: '', type: QuestionType.TEXT, required: false, options: [''] }
+            { label: '', type: QuestionType.TEXT, required: false, options: [''], order: prevQuestions.length }
         ]);
     };
 
@@ -98,9 +127,21 @@ const FormCreator: React.FC<{ questions: Question[], setQuestions: React.Dispatc
 
     return (
         <div className='flex flex-col'>
+            {/* <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+            >
+                <SortableContext
+                    items={questions.map(question => question.id!)}
+                    strategy={verticalListSortingStrategy}
+                > */}
+
             {questions.map((question, questionIndex) => (
-                <div key={questionIndex}>
+                // <SortableItem key={questionIndex} id={questionIndex}>
+                <div key={question.id}>
                     <div className='flex flex-row gap-x-3'>
+                        {/* <Hand /> */}
                         <Input type="text" value={question.label} onChange={(e) => handleQuestionChange(e, questionIndex)} />
                         <Select onValueChange={(e: QuestionType) => handleQuestionTypeChange(e, questionIndex)} value={question.type}>
                             <SelectTrigger className="w-[180px]">
@@ -112,7 +153,7 @@ const FormCreator: React.FC<{ questions: Question[], setQuestions: React.Dispatc
                                 <SelectItem value={QuestionType.MULTIPLE_CHOICE}>Multiple Choice</SelectItem>
                                 <SelectItem value={QuestionType.DROPDOWN}>Dropdown</SelectItem>
                                 <SelectItem value={QuestionType.CHECKBOX}>Checkbox</SelectItem>
-                                <SelectItem value={QuestionType.FILE}>File</SelectItem>
+                                {/* <SelectItem value={QuestionType.FILE}>File</SelectItem> */}
                             </SelectContent>
                         </Select>
                         <Switch checked={question.required} onCheckedChange={(e: boolean) => handleQuestionRequiredChange(e, questionIndex)} />
@@ -136,10 +177,13 @@ const FormCreator: React.FC<{ questions: Question[], setQuestions: React.Dispatc
                     )}
                     <Separator className='my-5' />
                 </div>
+                // </SortableItem>
             ))
             }
             <Button onClick={addQuestion}><PlusCircle className='w-5 h-5' /></Button>
-        </div >
+            {/* </SortableContext> */}
+            {/* </DndContext> */}
+        </div>
     );
 };
 

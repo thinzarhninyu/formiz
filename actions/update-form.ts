@@ -60,6 +60,7 @@ export const UpdateForm = async (values: z.infer<typeof FormSchema>) => {
                     type: field.type,
                     required: field.required,
                     options: field.options,
+                    order: field.order,
                     form: {
                         connect: {
                             id,
@@ -70,6 +71,7 @@ export const UpdateForm = async (values: z.infer<typeof FormSchema>) => {
                     label: field.label,
                     type: field.type,
                     required: field.required,
+                    order: field.order,
                     options: field.options,
                 },
             });

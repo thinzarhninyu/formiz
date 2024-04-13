@@ -21,6 +21,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { DEFAULT_FORM_IMAGE } from "@/data/constants";
 
 export const ViewForm: React.FC<{ form: Form, formQuestions: FormQuestion[], formResponses?: FormResponse[] | null, type: "view" | "manage" }> = ({ form, formQuestions, formResponses, type }) => {
 
@@ -80,7 +81,7 @@ export const ViewForm: React.FC<{ form: Form, formQuestions: FormQuestion[], for
     return (
         <Card>
             <CardHeader>
-                <Image src={form.image ?? ""} alt={form.title} width={100} height={100} />
+                <Image src={form.image ?? DEFAULT_FORM_IMAGE} alt={form.title} width={100} height={100} />
                 <CardTitle>
                     {form.title}
                 </CardTitle>

@@ -46,6 +46,7 @@ export const CreateForm = async (values: z.infer<typeof FormSchema>) => {
                     type: field.type,
                     required: field.required,
                     options: field.options,
+                    order: field.order,
                     form: {
                         connect: {
                             id: createdForm.id,

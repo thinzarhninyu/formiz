@@ -12,6 +12,7 @@ export const FormSchema = z.object({
             label: z.string(),
             type: z.nativeEnum(QuestionType),
             required: z.boolean(),
+            order: z.number(),
             options: z.array(z.string()).optional(),
         })
     ),

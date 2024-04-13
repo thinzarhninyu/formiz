@@ -19,6 +19,7 @@ interface Question {
     label: string;
     type: QuestionType;
     required: boolean;
+    order: number;
     options: string[];
 }
 
@@ -32,7 +33,7 @@ export const FormQuestions: React.FC<{ form?: Form, formQuestions?: FormQuestion
 
     const [formTitle, setFormTitle] = useState(form?.title ?? "");
     const [formDescription, setFormDescription] = useState(form?.description ?? "");
-    const [questions, setQuestions] = useState<Question[]>(formQuestions ?? [{ label: '', type: QuestionType.TEXT, required: false, options: [''] }]);
+    const [questions, setQuestions] = useState<Question[]>(formQuestions ?? [{ label: '', type: QuestionType.TEXT, required: false, options: [''], order: 0 }]);
 
     const handleSubmit = () => {
         setError("");
@@ -45,11 +46,12 @@ export const FormQuestions: React.FC<{ form?: Form, formQuestions?: FormQuestion
                     title: formTitle,
                     description: formDescription,
                     image,
-                    fields: questions.map(({ id, label, type, required, options }) => ({
+                    fields: questions.map(({ id, label, type, required, options, order }) => ({
                         id,
                         label,
                         type,
                         required,
+                        order,
                         options: type === QuestionType.MULTIPLE_CHOICE || QuestionType.DROPDOWN ? options : undefined,
                     })),
                 })
@@ -68,10 +70,11 @@ export const FormQuestions: React.FC<{ form?: Form, formQuestions?: FormQuestion
                     title: formTitle,
                     description: formDescription,
                     image,
-                    fields: questions.map(({ label, type, required, options }) => ({
+                    fields: questions.map(({ label, type, required, options, order }) => ({
                         label,
                         type,
                         required,
+                        order,
                         options: type === QuestionType.MULTIPLE_CHOICE || QuestionType.DROPDOWN ? options : undefined,
                     })),
                 })

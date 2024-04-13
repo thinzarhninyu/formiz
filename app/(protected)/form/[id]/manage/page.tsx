@@ -4,6 +4,7 @@ import { currentUser } from "@/lib/auth";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import FormResponses from "@/app/(protected)/_components/form-responses";
 import FormQuestions from "@/app/(protected)/_components/form-questions";
+import { ShareCard } from "@/app/(protected)/_components/share-card";
 
 const ManageFormPage: React.FC<{ params: { id: string } }> = async ({ params }) => {
 
@@ -38,6 +39,7 @@ const ManageFormPage: React.FC<{ params: { id: string } }> = async ({ params }) 
                     <TabsTrigger value="edit">Edit Form</TabsTrigger>
                     <TabsTrigger value="view">Preview Form</TabsTrigger>
                     <TabsTrigger value="responses">Responses</TabsTrigger>
+                    <TabsTrigger value="share">Share</TabsTrigger>
                 </TabsList>
                 <TabsContent value="edit">
                     <FormQuestions form={form} formQuestions={questions} />
@@ -53,6 +55,9 @@ const ManageFormPage: React.FC<{ params: { id: string } }> = async ({ params }) 
                             formResponses={responses}
                         />
                     }
+                </TabsContent>
+                <TabsContent value="share">
+                    <ShareCard form={form} />
                 </TabsContent>
             </Tabs>
         </main>

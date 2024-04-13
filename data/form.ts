@@ -27,7 +27,7 @@ export const getFormById = async (id: string) => {
 
 export const getFormQuestions = async (formId: string) => {
     try {
-        const questions = await db.formQuestion.findMany({ where: { formId } });
+        const questions = await db.formQuestion.findMany({ where: { formId }, orderBy: { order: 'asc' } });
 
         return questions;
     } catch {
