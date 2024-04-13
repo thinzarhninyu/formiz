@@ -29,7 +29,7 @@ export default async function RootLayout({
           <div className="sticky top-0 z-50 bg-white dark:bg-neutral-900 shadow-sm dark:shadow-gray-800 px-10">
             <Header />
           </div>
-          <main className="flex justify-center w-full">
+          <main className="">
             {children}
           </main>
           <Toaster />

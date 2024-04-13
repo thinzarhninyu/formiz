@@ -22,12 +22,14 @@ export const FileUpload = ({
 
     if (value && fileType !== "pdf") {
         return (
-            <div className="relative h-20 w-20">
+            <div className="relative">
                 <Image
-                    fill
                     src={value}
                     alt="Upload"
-                    className="rounded-full"
+                    width={300}
+                    height={50}
+                    className="w-full rounded-lg mb-5"
+
                 />
 
                 <button

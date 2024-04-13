@@ -7,7 +7,11 @@ const ViewFormPage: React.FC<{ params: { id: string } }> = async ({ params }) =>
     const user = await currentUser();
 
     if (!user) {
-        return <div>Unauthorized</div>;
+        return (
+            <main className="w-full min-h-screen items-center justify-center px-10 py-10 sm:px-24 text-center">
+                Unauthorized
+            </main>
+        );
     }
 
     const form = await getFormById(params.id);

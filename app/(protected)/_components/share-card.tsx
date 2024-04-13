@@ -12,14 +12,13 @@ import {
 import { Form } from "@prisma/client"
 import { useState } from "react"
 import { useToast } from "@/components/ui/use-toast"
-import { usePathname, useRouter } from "next/navigation"
+import Image from "next/image"
+import { DEFAULT_FORM_IMAGE } from "@/data/constants"
 
 export const ShareCard: React.FC<{ form: Form }> = ({ form }) => {
 
     const { toast } = useToast()
     const [copied, setCopied] = useState(false)
-    const pathname = usePathname()
-    const router = useRouter();
 
     const onShare = async () => {
         await navigator.clipboard.writeText(`${window.location.origin}/form/${form.id}?share=true`)
@@ -36,8 +35,9 @@ export const ShareCard: React.FC<{ form: Form }> = ({ form }) => {
     }
 
     return (
-        <Card className="w-full min-h-[300px] shadow-md hover:shadow-xl transition duration-300 ease-in-out transform hover:scale-[1.025] flex flex-col">
+        <Card>
             <CardHeader>
+                <Image src={form.image ?? DEFAULT_FORM_IMAGE} alt={form.title} width={300} height={50} className="w-full rounded-lg mb-5" />
                 <CardTitle>{form.title}</CardTitle>
                 <CardDescription className="overflow-hidden line-clamp-3 ">{form.description}</CardDescription>
             </CardHeader>

@@ -81,7 +81,7 @@ export const ViewForm: React.FC<{ form: Form, formQuestions: FormQuestion[], for
     return (
         <Card>
             <CardHeader>
-                <Image src={form.image ?? DEFAULT_FORM_IMAGE} alt={form.title} width={100} height={100} />
+                <Image src={form.image ?? DEFAULT_FORM_IMAGE} alt={form.title} width={300} height={50} className="w-full rounded-lg mb-5" />
                 <CardTitle>
                     {form.title}
                 </CardTitle>

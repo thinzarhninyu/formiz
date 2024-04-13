@@ -11,7 +11,11 @@ const ManageFormPage: React.FC<{ params: { id: string } }> = async ({ params }) 
     const user = await currentUser();
 
     if (!user) {
-        return <div>Unauthorized</div>;
+        return (
+            <main className="w-full min-h-screen items-center justify-center px-10 py-10 sm:px-24 text-center">
+                Unauthorized
+            </main>
+        );
     }
 
     const form = await getFormById(params.id);
@@ -21,7 +25,11 @@ const ManageFormPage: React.FC<{ params: { id: string } }> = async ({ params }) 
     }
 
     if (form.createdById !== user.id) {
-        return <div>Unauthorized</div>;
+        return (
+            <main className="w-full min-h-screen items-center justify-center px-10 py-10 sm:px-24 text-center">
+                Unauthorized
+            </main>
+        );
     }
 
     const questions = await getFormQuestions(params.id);
@@ -33,7 +41,7 @@ const ManageFormPage: React.FC<{ params: { id: string } }> = async ({ params }) 
     const responses = await getFormResponses(params.id);
 
     return (
-        <main className="flex min-h-screen flex-col items-center justify-between px-10 py-10 sm:px-24">
+        <main className="flex min-h-screen flex-col items-center justify-between pt-10 px-10 pb-20 sm:px-20 sm:pb-24">
             <Tabs defaultValue="edit">
                 <TabsList className="flex flex-row justify-center">
                     <TabsTrigger value="edit">Edit Form</TabsTrigger>
@@ -41,13 +49,13 @@ const ManageFormPage: React.FC<{ params: { id: string } }> = async ({ params }) 
                     <TabsTrigger value="responses">Responses</TabsTrigger>
                     <TabsTrigger value="share">Share</TabsTrigger>
                 </TabsList>
-                <TabsContent value="edit">
+                <TabsContent value="edit" className="w-full sm:min-w-[400px]">
                     <FormQuestions form={form} formQuestions={questions} />
                 </TabsContent>
-                <TabsContent value="view">
+                <TabsContent value="view" className="w-full sm:min-w-[400px]">
                     <ViewForm form={form} formQuestions={questions} type="manage" />
                 </TabsContent>
-                <TabsContent value="responses">
+                <TabsContent value="responses" className="w-full sm:min-w-[400px]">
                     {responses &&
                         <FormResponses
                             form={form}
@@ -56,7 +64,7 @@ const ManageFormPage: React.FC<{ params: { id: string } }> = async ({ params }) 
                         />
                     }
                 </TabsContent>
-                <TabsContent value="share">
+                <TabsContent value="share" className="w-full sm:min-w-[400px]">
                     <ShareCard form={form} />
                 </TabsContent>
             </Tabs>

@@ -11,10 +11,10 @@ import { DEFAULT_FORM_IMAGE } from "@/data/constants";
 
 export const FormCard: React.FC<{ form: Form, role: "creator" | "user" }> = ({ form, role }) => {
     return (
-        <Card className="w-full min-h-[300px] shadow-md hover:shadow-xl transition duration-300 ease-in-out transform hover:scale-[1.025] flex flex-col">
+        <Card className="w-full min-h-[250px] shadow-md hover:shadow-xl transition duration-300 ease-in-out transform hover:scale-[1.025] flex flex-col">
             <Link href={role === "user" ? `/form/${form.id}` : `/form/${form.id}/manage`}>
-                <div className="flex justify-center items-center w-full p-3 h-60">
-                    <Image src={form.image ?? DEFAULT_FORM_IMAGE} alt={form.title} width={300} height={50} className="w-full h-full object-cover rounded-lg" />
+                <div className="flex justify-center items-center w-full px-3 h-40 mt-5">
+                    <Image src={form.image ?? DEFAULT_FORM_IMAGE} alt={form.title} width={300} height={50} className="w-full rounded-lg" />
                 </div>
                 <CardHeader>
                     <CardTitle>{form.title}</CardTitle>

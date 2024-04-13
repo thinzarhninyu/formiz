@@ -19,7 +19,7 @@ const Home: React.FC = async () => {
   const forms = await getForms(user.id!);
 
   return (
-    <main className="w-full max-w-3xl min-h-screen items-center justify-center px-10 py-10 sm:px-24">
+    <main className="flex min-h-screen flex-col items-center justify-between px-10 pb-20 sm:px-20 sm:pb-24">
       <div className='pt-12 sm:pt-24'>
         <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="text-center">
