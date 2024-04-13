@@ -29,7 +29,7 @@ const ViewFormPage: React.FC<{ params: { id: string } }> = async ({ params }) =>
     const responses = await getFormResponseByUser(params.id, user.id!);
 
     return (
-        <main className="w-full max-w-3xl min-h-screen items-center justify-center px-10 py-10 sm:px-24">
+        <main className="flex min-h-screen flex-col items-center justify-between pt-10 px-10 pb-20 sm:px-20 sm:pb-24">
             <FormView form={form} formQuestions={questions} formResponses={responses} type="view" />
         </main>
     )

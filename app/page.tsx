@@ -3,6 +3,7 @@ import { getForms } from "@/data/form";
 import { currentUser } from "@/lib/auth";
 import { FormCard } from "./(protected)/_components/form-card";
 import Link from "next/link";
+import { Landing } from "@/components/landing";
 
 const Home: React.FC = async () => {
 
@@ -10,8 +11,8 @@ const Home: React.FC = async () => {
 
   if (!user) {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-between p-24">
-        <LoginButton />
+      <main className="flex min-h-screen flex-col items-center justify-between pt-10 px-10 pb-20 sm:px-20 sm:pb-24">
+        <Landing />
       </main>
     );
   }

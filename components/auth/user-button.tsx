@@ -42,10 +42,10 @@ export const UserButton = () => {
             Profile
           </span>
         </DropdownMenuItem> */}
-        <DropdownMenuItem onClick={() => router.push('/settings')}>
+        {/* <DropdownMenuItem onClick={() => router.push('/settings')}>
           <Settings className="h-4 w-4 mr-2" />
           Settings
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
         <DropdownMenuItem>
           <Button className="w-full" onClick={() => signOut()}>
             <LogOut className="h-4 w-4 mr-2" />
