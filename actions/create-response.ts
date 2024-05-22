@@ -49,13 +49,13 @@ export const CreateResponse = async (values: z.infer<typeof ResponseSchema>) => 
     }
 
     await Promise.all(
-        responses.map(async (response, index) => {
+        responses.map(async (response) => {
             return db.formResponse.create({
                 data: {
                     answer: response.response,
                     question: {
                         connect: {
-                            id: formQuestions[index].id,
+                            id: response.questionId,
                         },
                     },
                     form: {
